@@ -1,0 +1,104 @@
+from opcua import Server
+import time
+from opcua import ua
+
+server = Server()
+
+url = "opc.tcp://192.168.162.10:4840"
+server.set_endpoint(url)
+
+name = "OPCUA_SIMULATION_SERVER"
+addspace = server.register_namespace(name)
+
+node = server.get_objects_node()
+
+Param = node.add_object(addspace, "Parameters")
+
+CNCChannels = Param.add_variable(addspace, "CNCChannels", 0)
+CNCChannels.set_nodeid(ua.NodeId("ns=0;i=2"))
+
+AxisNumber = Param.add_variable(addspace, "AxisNameumber", 0)
+AxisNumber.set_nodeid(ua.NodeId("ns=0;i=3"))
+
+# 设置数组变量对象的属性
+AxisName = Param.add_variable(addspace, "AxisName", [])
+AxisName.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=4")))  
+AxisName.set_array_dimensions([10]) 
+
+CartAxis = Param.add_variable(addspace, "CartAxis", [])
+CartAxis.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=5")))  
+CartAxis.set_array_dimensions([10]) 
+
+CNCState = Param.add_variable(addspace, "CNCState", 0)
+CNCState.set_nodeid(ua.NodeId("ns=0;i=6"))
+
+CNCMode = Param.add_variable(addspace, "CNCMode", 0)
+CNCMode.set_nodeid(ua.NodeId("ns=0;i=7"))
+
+CNCActValue = Param.add_variable(addspace, "CNCActValue", [])
+CNCActValue.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=8")))  
+CNCActValue.set_array_dimensions([10]) 
+
+CNCVar = Param.add_variable(addspace, "CNCVar", [])
+CNCVar.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=9")))  
+CNCVar.set_array_dimensions([10]) 
+
+PLCInX = Param.add_variable(addspace, "PLCInX", [])
+PLCInX.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=10")))  
+PLCInX.set_array_dimensions([5]) 
+
+PLCOutY = Param.add_variable(addspace, "PLCOutY", [])
+PLCOutY.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=11")))  
+PLCOutY.set_array_dimensions([5]) 
+
+PLCMidR = Param.add_variable(addspace, "PLCMidR", 0)
+PLCMidR.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=12")))  
+PLCMidR.set_array_dimensions([5]) 
+
+CNCTeachState = Param.add_variable(addspace, "CNCTeachState", 0)
+CNCTeachState.set_nodeid(ua.NodeId("ns=0;i=13"))
+
+CNCLoadProgram = Param.add_variable(addspace, "CNCLoadProgram", 0)
+CNCLoadProgram.set_nodeid(ua.NodeId("ns=0;i=14"))
+
+CNCLine = Param.add_variable(addspace, "CNCLine", 0)
+CNCLine.set_nodeid(ua.NodeId("ns=0;i=15"))
+
+CNCAlarm = Param.add_variable(addspace, "CNCAlarm", [])
+CNCAlarm.set_datatype(ua.VariantArrayType(ua.NodeId("ns=0;i=16")))  
+CNCAlarm.set_array_dimensions([5]) 
+
+CNCCycle = Param.add_variable(addspace, "CNCCycle", 0)
+CNCCycle.set_nodeid(ua.NodeId("ns=0;i=17"))
+
+CNCIsSingle = Param.add_variable(addspace, "CNCIsSingle", 0)
+CNCIsSingle.set_nodeid(ua.NodeId("ns=0;i=18"))
+
+CNCChannels.set_writable()
+AxisNumber.set_writable()
+AxisName.set_writable()
+CartAxis.set_writable()
+CNCState.set_writable()
+CNCMode.set_writable()
+CNCActValue.set_writable()
+CNCVar.set_writable()
+PLCInX.set_writable()
+PLCOutY.set_writable()
+PLCMidR.set_writable()
+CNCTeachState.set_writable()
+CNCLoadProgram.set_writable()
+CNCLine.set_writable()
+CNCAlarm.set_writable()
+CNCCycle.set_writable()
+CNCIsSingle.set_writable()
+
+server.start()
+
+print(f"Server started at {url}")
+
+# AxisNumber.set_value(5)
+# CNCMode.set_value(1)
+# CNCXVar.set_value(10.0)
+
+while True:
+    time.sleep(1)

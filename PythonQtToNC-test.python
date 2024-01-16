@@ -1,0 +1,52 @@
+import paho.mqtt.client as mqtt
+import struct
+
+# MQTT服务器的代理地址
+broker = "192.168.162.200"
+
+# 当连接到服务器时被调用
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected with result code {str(rc)}")
+
+    client.subscribe("mallDis2PC_C0_P1002",1)  # 订阅轴数
+    client.subscribe("proDis2PC_C0_P2002",1)  # 订阅模式
+    client.subscribe("proDis2PC_C0_P2004",1)  # 订阅轴编程值
+
+    data = 1
+    byteArray = struct.pack('i',data)
+    client.publish("mallPC2Dis_C0_cmd", byteArray)
+    
+    data2 = 2
+    byteArray2 = struct.pack('i',data2)
+    client.publish("mallPC2Dis_C0_cmd", byteArray2)
+
+def on_disconnect(client, userdata, rc):
+    print("Disconnected from MQTT Broker")
+
+# 当接收到从服务器发来的消息时被调用
+def on_message(client, userdata, msg):
+    print(f"Topic: {msg.topic}")
+    if msg.topic == "mallDis2PC_C0_P1002":
+        # 轴数
+        data = struct.unpack('i', msg.payload)[0]
+        print(f"Axis number: {data}")
+    elif msg.topic == "proDis2PC_C0_P2002":
+        # 模式
+        data = struct.unpack('i', msg.payload)[0]
+        print(f"CNC mode: {data}")
+    elif msg.topic == "proDis2PC_C0_P2004":
+        # 模式
+        data = struct.unpack('d', msg.payload)[0]
+        print(f"CNC X var: {data}")
+
+client = mqtt.Client()
+client.on_connect = on_connect
+client.on_message = on_message
+client.on_disconnect = on_disconnect
+
+client.connect(broker, 1883, 60)
+
+# 开始循环，处理网络事件
+client.loop_start()
+
+while True:pass

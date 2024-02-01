@@ -1,0 +1,34 @@
+from opcua import Server
+import time
+from opcua import ua
+
+server = Server()
+
+url = "opc.tcp://192.168.162.10:4840"
+server.set_endpoint(url)
+
+name = "OPCUA_SIMULATION_SERVER"
+addspace = server.register_namespace(name)
+
+node = server.get_objects_node()
+
+Param = node.add_object(addspace, "Parameters")
+
+AxisNumber = Param.add_variable(addspace, "AxisNumber", 0)
+CNCMode = Param.add_variable(addspace, "CNCMode", 0)
+CNCXVar = Param.add_variable(addspace, "CNCXVar", 0.0)
+
+AxisNumber.set_writable()
+CNCMode.set_writable()
+CNCXVar.set_writable()
+
+server.start()
+
+print(f"Server started at {url}")
+
+# AxisNumber.set_value(5)
+# CNCMode.set_value(1)
+# CNCXVar.set_value(10.0)
+
+while True:
+    time.sleep(1)

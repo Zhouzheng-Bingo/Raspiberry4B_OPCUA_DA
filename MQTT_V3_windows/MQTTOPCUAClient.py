@@ -17,7 +17,7 @@ def on_connect(client, userdata, flags, rc):
     #
     client.subscribe("proDis2PC_C0_P2001", 1)  # 订阅CNC状态
     client.subscribe("proDis2PC_C0_P2002", 1)  # 订阅模式
-    # client.subscribe("proDis2PC_C0_P2003",1)  # 订阅机床位置实际值
+    client.subscribe("proDis2PC_C0_P2003",1)  # 订阅机床位置实际值
     client.subscribe("proDis2PC_C0_P2004", 1)  # 订阅轴编程值
     # client.subscribe("proDis2PC_C0_P2005",1)  # 订阅PLC输入点X
     # client.subscribe("proDis2PC_C0_P2006",1)  # 订阅PLC输出点Y
@@ -62,7 +62,7 @@ def on_message(client, userdata, msg):
         print(f"CNC Channels: {data}")
         if data is not None:
             CNCChannels.set_value(data)  # 将数据写入到OPC UA服务器的节点
-    elif msg.topic == "mallDis2PC_C0_P1002":
+    elif msg.topic == "mallDis2PC_C0_P1002":  # Y
         # 轴数
         data = struct.unpack('i', msg.payload)[0]
         print(f"Axis number: {data}")

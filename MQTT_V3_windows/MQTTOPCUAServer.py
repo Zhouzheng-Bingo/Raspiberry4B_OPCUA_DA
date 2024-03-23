@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
     server = Server()
 
-    url = "opc.tcp://192.168.162.82:4840"
+    url = "opc.tcp://localhost:48020/"
     server.set_endpoint(url)
 
     name = "OPCUA_SIMULATION_SERVER"
@@ -43,22 +43,22 @@ if __name__ == '__main__':
     actualfeedrate.set_writable()
 
     # Read 实际坐标编程值 for 轴1 to 轴9
-    xaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1001, addspace), "xaxismachinetoolcoordinateactualvalue", 0.0)
+    xaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(8472, addspace), "xaxismachinetoolcoordinateactualvalue", 0.0)
     xaxismachinetoolcoordinateactualvalue.set_writable()
 
-    yaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1002, addspace), "yaxismachinetoolcoordinateactualvalue", 0.0)
+    yaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(8473, addspace), "yaxismachinetoolcoordinateactualvalue", 0.0)
     yaxismachinetoolcoordinateactualvalue.set_writable()
 
-    zaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1003, addspace), "zaxismachinetoolcoordinateactualvalue", 0.0)
+    zaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(8474, addspace), "zaxismachinetoolcoordinateactualvalue", 0.0)
     zaxismachinetoolcoordinateactualvalue.set_writable()
 
-    aaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1004, addspace), "aaxismachinetoolcoordinateactualvalue", 0.0)
+    aaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(8475, addspace), "aaxismachinetoolcoordinateactualvalue", 0.0)
     aaxismachinetoolcoordinateactualvalue.set_writable()
 
     baxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1005, addspace), "baxismachinetoolcoordinateactualvalue", 0.0)
     baxismachinetoolcoordinateactualvalue.set_writable()
 
-    caxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1006, addspace), "caxismachinetoolcoordinateactualvalue", 0.0)
+    caxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(8476, addspace), "caxismachinetoolcoordinateactualvalue", 0.0)
     caxismachinetoolcoordinateactualvalue.set_writable()
 
     uaxismachinetoolcoordinateactualvalue = Param.add_variable(ua.NodeId(1007, addspace), "uaxismachinetoolcoordinateactualvalue", 0.0)
@@ -105,6 +105,18 @@ if __name__ == '__main__':
     # Read 工作状态
     CNCState = Param.add_variable(ua.NodeId(1020, addspace), "CNCState", 0)
     CNCState.set_writable()
+
+    # Read 当前行号
+    CurrentLine = Param.add_variable(ua.NodeId(8465, addspace), "CurrentLine", 0)
+    CurrentLine.set_writable()
+
+    # Read 是否单步执行
+    IsSingleStepExecutionMode = Param.add_variable(ua.NodeId(8466, addspace), "IsSingleStepExecutionMode", 0)
+    IsSingleStepExecutionMode.set_writable()
+
+    # 创建程序名节点
+    ProgramFileName = Param.add_variable(ua.NodeId(8467, addspace), "ProgramFileName", "", ua.VariantType.String)
+    ProgramFileName.set_writable()
 
     # Read x_电压(x方向振动)
     x_voltage = Param.add_variable(ua.NodeId(1021, addspace), "x_voltage", 0.0)

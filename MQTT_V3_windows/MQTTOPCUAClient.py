@@ -44,6 +44,8 @@ def process_message(msg):
         CNCVar_x.set_value(data[0])
         CNCVar_y.set_value(data[1])
         CNCVar_z.set_value(data[2])
+        CNCVar_a.set_value(data[3])
+        CNCVar_c.set_value(data[4])
         print(f"Updated CNC Axis Vars: X={data[0]}, Y={data[1]}, Z={data[2]}")
 
 def on_message(client, userdata, msg):
@@ -79,6 +81,8 @@ if __name__ == '__main__':
     CNCVar_x = opcua_client.get_node("ns=2;i=8")
     CNCVar_y = opcua_client.get_node("ns=2;i=9")
     CNCVar_z = opcua_client.get_node("ns=2;i=10")
+    CNCVar_a = opcua_client.get_node("ns=2;i=11")
+    CNCVar_c = opcua_client.get_node("ns=2;i=13")
 
     # 开始MQTT客户端循环
     client.loop_start()

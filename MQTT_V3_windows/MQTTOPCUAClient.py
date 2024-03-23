@@ -76,9 +76,9 @@ if __name__ == '__main__':
     AxisNumber = opcua_client.get_node("ns=2;i=3")
     CNCState = opcua_client.get_node("ns=2;i=4")
     CNCMode = opcua_client.get_node("ns=2;i=5")
-    CNCVar_x = opcua_client.get_node("ns=2;i=6")
-    CNCVar_y = opcua_client.get_node("ns=2;i=7")
-    CNCVar_z = opcua_client.get_node("ns=2;i=8")
+    CNCVar_x = opcua_client.get_node("ns=2;i=8")
+    CNCVar_y = opcua_client.get_node("ns=2;i=9")
+    CNCVar_z = opcua_client.get_node("ns=2;i=10")
 
     # 开始MQTT客户端循环
     client.loop_start()

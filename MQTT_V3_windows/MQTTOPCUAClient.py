@@ -5,7 +5,7 @@ import threading
 import time
 
 # 设置固定频率接收消息的时间间隔（秒）
-PROCESS_INTERVAL = 0.3
+PROCESS_INTERVAL = 0.01
 # 上一次处理消息的时间戳
 last_process_time = time.time() - PROCESS_INTERVAL
 
@@ -21,17 +21,18 @@ def on_connect(client, userdata, flags, rc):
 def on_disconnect(client, userdata, rc):
     print("Disconnected from MQTT Broker")
 
+
 def process_message(msg):
     # 解析不同主题的消息并更新OPC UA节点
-    if msg.topic == "mallDis2PC_C1_P1001":
-        data = struct.unpack('i', msg.payload)[0]
-        CNCChannels.set_value(data)
-        print(f"Updated CNC Channels: {data}")
-    elif msg.topic == "mallDis2PC_C0_P1002":
-        data = struct.unpack('i', msg.payload)[0]
-        AxisNumber.set_value(data)
-        print(f"Updated Axis Number: {data}")
-    elif msg.topic == "proDis2PC_C0_P2001":
+    # if msg.topic == "mallDis2PC_C1_P1001":
+    #     data = struct.unpack('i', msg.payload)[0]
+    #     CNCChannels.set_value(data)
+    #     print(f"Updated CNC Channels: {data}")
+    # elif msg.topic == "mallDis2PC_C0_P1002":
+    #     data = struct.unpack('i', msg.payload)[0]
+    #     AxisNumber.set_value(data)
+    #     print(f"Updated Axis Number: {data}")
+    if msg.topic == "proDis2PC_C0_P2001":
         data = struct.unpack('i', msg.payload)[0]
         CNCState.set_value(data)
         print(f"Updated CNC State: {data}")
@@ -39,6 +40,14 @@ def process_message(msg):
         data = struct.unpack('i', msg.payload)[0]
         CNCMode.set_value(data)
         print(f"Updated CNC Mode: {data}")
+    elif msg.topic == "proDis2PC_C0_P2003":
+        data = struct.unpack('32d', msg.payload)
+        CNCVarAct_x.set_value(data[0])
+        CNCVarAct_y.set_value(data[1])
+        CNCVarAct_z.set_value(data[2])
+        CNCVarAct_a.set_value(data[3])
+        CNCVarAct_c.set_value(data[4])
+        print(f"Updated CNC Axis Vars: X={data[0]}, Y={data[1]}, Z={data[2]}")
     elif msg.topic == "proDis2PC_C0_P2004":
         data = struct.unpack('32d', msg.payload)
         CNCVar_x.set_value(data[0])
@@ -74,15 +83,20 @@ if __name__ == '__main__':
     opcua_client.connect()
 
     # 获取并设置OPC UA节点
-    CNCChannels = opcua_client.get_node("ns=2;i=2")
-    AxisNumber = opcua_client.get_node("ns=2;i=3")
-    CNCState = opcua_client.get_node("ns=2;i=4")
-    CNCMode = opcua_client.get_node("ns=2;i=5")
-    CNCVar_x = opcua_client.get_node("ns=2;i=8")
-    CNCVar_y = opcua_client.get_node("ns=2;i=9")
-    CNCVar_z = opcua_client.get_node("ns=2;i=10")
-    CNCVar_a = opcua_client.get_node("ns=2;i=11")
-    CNCVar_c = opcua_client.get_node("ns=2;i=13")
+    # CNCChannels = opcua_client.get_node("ns=2;i=2")
+    # AxisNumber = opcua_client.get_node("ns=2;i=3")
+    CNCState = opcua_client.get_node("ns=2;i=1020")
+    CNCMode = opcua_client.get_node("ns=2;i=1019")
+    CNCVar_x = opcua_client.get_node("ns=2;i=8460")
+    CNCVar_y = opcua_client.get_node("ns=2;i=8461")
+    CNCVar_z = opcua_client.get_node("ns=2;i=8462")
+    CNCVar_a = opcua_client.get_node("ns=2;i=8463")
+    CNCVar_c = opcua_client.get_node("ns=2;i=8464")
+    CNCVarAct_x = opcua_client.get_node("ns=2;i=1001")
+    CNCVarAct_y = opcua_client.get_node("ns=2;i=1002")
+    CNCVarAct_z = opcua_client.get_node("ns=2;i=1003")
+    CNCVarAct_a = opcua_client.get_node("ns=2;i=1004")
+    CNCVarAct_c = opcua_client.get_node("ns=2;i=1006")
 
     # 开始MQTT客户端循环
     client.loop_start()

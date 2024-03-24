@@ -22,6 +22,14 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("proDis2PC_C0_P2010", 0)
     client.subscribe("proDis2PC_C0_P2009", 0)
 
+    data = 1
+    byteArray = struct.pack('i',data)
+    client.publish("mallPC2Dis_C0_cmd", byteArray)
+
+    data2 = 2
+    byteArray2 = struct.pack('i',data2)
+    client.publish("mallPC2Dis_C0_cmd", byteArray2)
+
 def on_disconnect(client, userdata, rc):
     print("Disconnected from MQTT Broker")
 

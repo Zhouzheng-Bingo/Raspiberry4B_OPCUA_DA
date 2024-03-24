@@ -12,6 +12,8 @@ PROCESS_INTERVAL = 0.0005
 last_process_time = time.time() - PROCESS_INTERVAL
 
 global file_name
+global CurrentLineFlag  # 初始化为 None 或者适当的值
+CurrentLineFlag = None
 
 def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {str(rc)}")
@@ -25,6 +27,13 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("proDis2PC_C0_P2010", 0)
     client.subscribe("proDis2PC_C0_P2009", 0)
 
+    data = 1
+    byteArray = struct.pack('i',data)
+    client.publish("mallPC2Dis_C0_cmd", byteArray)
+
+    data2 = 2
+    byteArray2 = struct.pack('i',data2)
+    client.publish("mallPC2Dis_C0_cmd", byteArray2)
 
 def on_disconnect(client, userdata, rc):
     print("Disconnected from MQTT Broker")
@@ -40,6 +49,8 @@ def process_message(msg):
     #     data = struct.unpack('i', msg.payload)[0]
     #     AxisNumber.set_value(data)
     #     print(f"Updated Axis Number: {data}")
+
+    global CurrentLineFlag
 
     if msg.topic == "proDis2PC_C0_P2001":
         data = struct.unpack('i', msg.payload)[0]
@@ -68,6 +79,7 @@ def process_message(msg):
     elif msg.topic == "programLine2PC_C0_cmd":
         data = struct.unpack('i', msg.payload)[0]
         CurrentLine.set_value(data)
+        CurrentLineFlag = data
         print(f"Updated CNC CurrentLine: {data}")
     elif msg.topic == "proDis2PC_C0_P2010":
         data = struct.unpack('i', msg.payload)[0]
@@ -99,93 +111,99 @@ def process_message(msg):
         except Exception as e:
             print(f"Failed to write ProgramFileName to OPC UA server: {e}")
 
-        # 使用正则表达式提取文件名
-        match1 = re.search(r'[^\\/]+$', clean_filename)
-        if match1:
-            file_name = match1.group()
-            print(file_name)
-        else:
-            print("文件名未找到")
-        # 获取当前脚本的目录
-        current_dir = os.path.dirname(__file__)
+        # # 使用正则表达式提取文件名
+        # match1 = re.search(r'[^\\/]+$', clean_filename)
+        # if match1:
+        #     file_name = match1.group()
+        #     print(file_name)
+        # else:
+        #     print("文件名未找到")
+        #
+        # current_line_number = CurrentLineFlag
+        #
+        # # 设置GCode文件夹的路径
+        # gcode_dir = "GCode"
+        #
+        # # 构造完整的文件路径
+        #
+        # file_path = os.path.join(gcode_dir, file_name)
+        #
+        # # 使用线程来读取文件的当前行，并更新OPC UA节点
+        # threading.Thread(target=read_current_line_and_set_opcua, args=(file_path, current_line_number, Line)).start()
+        # # 获取当前脚本的目录
+        # current_dir = os.path.dirname(__file__)
+        #
+        # subdir_name = "GCode"  # 假设 "GCode" 是子目录的名称
+        #
+        # # 构造子目录的完整路径
+        # subdir_path = os.path.join(current_dir, subdir_name)
+        #
+        # # 构造文件的完整路径
+        # file_path = os.path.join(subdir_path, file_name)
+        #
+        # # 打开并读取文件内容
+        # with open(file_path, 'r') as file:
+        #     lines = file.readlines()
+        #
+        # lines = [line.strip() for line in lines]
+        # LineCount = len(lines)
+        #
+        # if CurrentLine - 10:
+        #     LineBefore10.set_value(lines[CurrentLine - 10])
+        # if CurrentLine - 9:
+        #     LineBefore9.set_value(lines[CurrentLine - 9])
+        # if CurrentLine - 8:
+        #     LineBefore8.set_value(lines[CurrentLine - 8])
+        # if CurrentLine - 7:
+        #     LineBefore7.set_value(lines[CurrentLine - 7])
+        # if CurrentLine - 6:
+        #     LineBefore6.set_value(lines[CurrentLine - 6])
+        # if CurrentLine - 5:
+        #     LineBefore5.set_value(lines[CurrentLine - 5])
+        # if CurrentLine - 4:
+        #     LineBefore4.set_value(lines[CurrentLine - 4])
+        # if CurrentLine - 3:
+        #     LineBefore3.set_value(lines[CurrentLine - 3])
+        # if CurrentLine - 2:
+        #     LineBefore2.set_value(lines[CurrentLine - 2])
+        # if CurrentLine - 1:
+        #     LineBefore1.set_value(lines[CurrentLine - 1])
+        # Line.set_value(lines[CurrentLine])
+        # if CurrentLine + 1 < LineCount:
+        #     LineAfter1.set_value(lines[CurrentLine + 1])
+        # if CurrentLine + 2 < LineCount:
+        #     LineAfter2.set_value(lines[CurrentLine + 2])
+        # if CurrentLine + 3 < LineCount:
+        #     LineAfter3.set_value(lines[CurrentLine + 3])
+        # if CurrentLine + 4 < LineCount:
+        #     LineAfter4.set_value(lines[CurrentLine + 4])
+        # if CurrentLine + 5 < LineCount:
+        #     LineAfter5.set_value(lines[CurrentLine + 5])
+        # if CurrentLine + 6 < LineCount:
+        #     LineAfter6.set_value(lines[CurrentLine + 6])
+        # if CurrentLine + 7 < LineCount:
+        #     LineAfter7.set_value(lines[CurrentLine + 7])
+        # if CurrentLine + 8 < LineCount:
+        #     LineAfter8.set_value(lines[CurrentLine + 8])
+        # if CurrentLine + 9 < LineCount:
+        #     LineAfter9.set_value(lines[CurrentLine + 9])
+        # if CurrentLine + 10 < LineCount:
+        #     LineAfter10.set_value(lines[CurrentLine + 10])
 
-        subdir_name = "GCode"  # 假设 "GCode" 是子目录的名称
 
-        # 构造子目录的完整路径
-        subdir_path = os.path.join(current_dir, subdir_name)
-
-        # 构造文件的完整路径
-        file_path = os.path.join(subdir_path, file_name)
-
-        # 打开并读取文件内容
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-
-        lines = [line.strip() for line in lines]
-        LineCount = len(lines)
-
-        if CurrentLine - 15:
-            LineBefore15.set_value(lines[CurrentLine - 15])
-        if CurrentLine - 14:
-            LineBefore14.set_value(lines[CurrentLine - 14])
-        if CurrentLine - 13:
-            LineBefore13.set_value(lines[CurrentLine - 13])
-        if CurrentLine - 12:
-            LineBefore12.set_value(lines[CurrentLine - 12])
-        if CurrentLine - 11:
-            LineBefore11.set_value(lines[CurrentLine - 11])
-        if CurrentLine - 10:
-            LineBefore10.set_value(lines[CurrentLine - 10])
-        if CurrentLine - 9:
-            LineBefore9.set_value(lines[CurrentLine - 9])
-        if CurrentLine - 8:
-            LineBefore8.set_value(lines[CurrentLine - 8])
-        if CurrentLine - 7:
-            LineBefore7.set_value(lines[CurrentLine - 7])
-        if CurrentLine - 6:
-            LineBefore6.set_value(lines[CurrentLine - 6])
-        if CurrentLine - 5:
-            LineBefore5.set_value(lines[CurrentLine - 5])
-        if CurrentLine - 4:
-            LineBefore4.set_value(lines[CurrentLine - 4])
-        if CurrentLine - 3:
-            LineBefore3.set_value(lines[CurrentLine - 3])
-        if CurrentLine - 2:
-            LineBefore2.set_value(lines[CurrentLine - 2])
-        if CurrentLine - 1:
-            LineBefore1.set_value(lines[CurrentLine - 1])
-        Line.set_value(lines[CurrentLine])
-        if CurrentLine + 1 < LineCount:
-            LineAfter1.set_value(lines[CurrentLine + 1])
-        if CurrentLine + 2 < LineCount:
-            LineAfter2.set_value(lines[CurrentLine + 2])
-        if CurrentLine + 3 < LineCount:
-            LineAfter3.set_value(lines[CurrentLine + 3])
-        if CurrentLine + 4 < LineCount:
-            LineAfter4.set_value(lines[CurrentLine + 4])
-        if CurrentLine + 5 < LineCount:
-            LineAfter5.set_value(lines[CurrentLine + 5])
-        if CurrentLine + 6 < LineCount:
-            LineAfter6.set_value(lines[CurrentLine + 6])
-        if CurrentLine + 7 < LineCount:
-            LineAfter7.set_value(lines[CurrentLine + 7])
-        if CurrentLine + 8 < LineCount:
-            LineAfter8.set_value(lines[CurrentLine + 8])
-        if CurrentLine + 9 < LineCount:
-            LineAfter9.set_value(lines[CurrentLine + 9])
-        if CurrentLine + 10 < LineCount:
-            LineAfter10.set_value(lines[CurrentLine + 10])
-        if CurrentLine + 11 < LineCount:
-            LineAfter11.set_value(lines[CurrentLine + 11])
-        if CurrentLine + 12 < LineCount:
-            LineAfter12.set_value(lines[CurrentLine + 12])
-        if CurrentLine + 13 < LineCount:
-            LineAfter13.set_value(lines[CurrentLine + 13])
-        if CurrentLine + 14 < LineCount:
-            LineAfter14.set_value(lines[CurrentLine + 14])
-        if CurrentLine + 15 < LineCount:
-            LineAfter15.set_value(lines[CurrentLine + 15])
-
+# def read_current_line_and_set_opcua(file_path, current_line_number, opcua_node):
+#     try:
+#         with open(file_path, 'r') as file:
+#             for i, line in enumerate(file, start=0):
+#                 if i == current_line_number:
+#                     line_content = line.strip()
+#                     print(f"第{current_line_number}行的内容是：{line_content}")
+#                     opcua_node.set_value(line_content)
+#                     break
+#     except FileNotFoundError:
+#         print(f"文件 {file_name} 未找到。")
+#     except Exception as e:
+#         print(f"读取文件时发生错误：{e}")
 
 def on_message(client, userdata, msg):
     global last_process_time
@@ -232,38 +250,28 @@ if __name__ == '__main__':
     # CNC当前运行行号
     CurrentLine = opcua_client.get_node("ns=2;i=8465")
 
-    # 获取31行G代码节点
-    LineBefore15 = opcua_client.get_node("ns=2;i=8485")
-    LineBefore14 = opcua_client.get_node("ns=2;i=8486")
-    LineBefore13 = opcua_client.get_node("ns=2;i=8487")
-    LineBefore12 = opcua_client.get_node("ns=2;i=8488")
-    LineBefore11 = opcua_client.get_node("ns=2;i=8489")
-    LineBefore10 = opcua_client.get_node("ns=2;i=8490")
-    LineBefore9 = opcua_client.get_node("ns=2;i=8491")
-    LineBefore8 = opcua_client.get_node("ns=2;i=8492")
-    LineBefore7 = opcua_client.get_node("ns=2;i=8493")
-    LineBefore6 = opcua_client.get_node("ns=2;i=8594")
-    LineBefore5 = opcua_client.get_node("ns=2;i=8495")
-    LineBefore4 = opcua_client.get_node("ns=2;i=8496")
-    LineBefore3 = opcua_client.get_node("ns=2;i=8497")
-    LineBefore2 = opcua_client.get_node("ns=2;i=8498")
-    LineBefore1 = opcua_client.get_node("ns=2;i=8499")
-    Line = opcua_client.get_node("ns=2;i=8500")
-    LineAfter1 = opcua_client.get_node("ns=2;i=8501")
-    LineAfter2 = opcua_client.get_node("ns=2;i=8502")
-    LineAfter3 = opcua_client.get_node("ns=2;i=8503")
-    LineAfter4 = opcua_client.get_node("ns=2;i=8504")
-    LineAfter5 = opcua_client.get_node("ns=2;i=8505")
-    LineAfter6 = opcua_client.get_node("ns=2;i=8506")
-    LineAfter7 = opcua_client.get_node("ns=2;i=8507")
-    LineAfter8 = opcua_client.get_node("ns=2;i=8508")
-    LineAfter9 = opcua_client.get_node("ns=2;i=8509")
-    LineAfter10 = opcua_client.get_node("ns=2;i=8510")
-    LineAfter11 = opcua_client.get_node("ns=2;i=8511")
-    LineAfter12 = opcua_client.get_node("ns=2;i=8512")
-    LineAfter13 = opcua_client.get_node("ns=2;i=8513")
-    LineAfter14 = opcua_client.get_node("ns=2;i=8514")
-    LineAfter15 = opcua_client.get_node("ns=2;i=8515")
+    # 获取21行G代码节点
+    # LineBefore10 = opcua_client.get_node("ns=2;i=9000")
+    # LineBefore9 = opcua_client.get_node("ns=2;i=9001")
+    # LineBefore8 = opcua_client.get_node("ns=2;i=9002")
+    # LineBefore7 = opcua_client.get_node("ns=2;i=9003")
+    # LineBefore6 = opcua_client.get_node("ns=2;i=9004")
+    # LineBefore5 = opcua_client.get_node("ns=2;i=9005")
+    # LineBefore4 = opcua_client.get_node("ns=2;i=9006")
+    # LineBefore3 = opcua_client.get_node("ns=2;i=9007")
+    # LineBefore2 = opcua_client.get_node("ns=2;i=9008")
+    # LineBefore1 = opcua_client.get_node("ns=2;i=9009")
+    # Line = opcua_client.get_node("ns=2;i=9010")
+    # LineAfter1 = opcua_client.get_node("ns=2;i=9011")
+    # LineAfter2 = opcua_client.get_node("ns=2;i=9012")
+    # LineAfter3 = opcua_client.get_node("ns=2;i=9013")
+    # LineAfter4 = opcua_client.get_node("ns=2;i=9014")
+    # LineAfter5 = opcua_client.get_node("ns=2;i=9015")
+    # LineAfter6 = opcua_client.get_node("ns=2;i=9016")
+    # LineAfter7 = opcua_client.get_node("ns=2;i=9017")
+    # LineAfter8 = opcua_client.get_node("ns=2;i=9018")
+    # LineAfter9 = opcua_client.get_node("ns=2;i=9019")
+    # LineAfter10 = opcua_client.get_node("ns=2;i=9020")
 
     # 是否单步执行
     IsSingleStepExecutionMode = opcua_client.get_node("ns=2;i=8466")

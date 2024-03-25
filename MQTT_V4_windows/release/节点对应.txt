@@ -1,0 +1,62 @@
+    LineBefore2 = Param.add_variable(ua.NodeId(9000, addspace), "(n-2)th G code", "", ua.VariantType.String)
+    LineBefore2.set_writable()
+
+    LineBefore1 = Param.add_variable(ua.NodeId(9001, addspace), "(n-1)th G code", "", ua.VariantType.String)
+    LineBefore1.set_writable()
+
+    Line = Param.add_variable(ua.NodeId(9002, addspace), "(n)th G code", "", ua.VariantType.String)
+    Line.set_writable()
+
+    LineAfter1 = Param.add_variable(ua.NodeId(9003, addspace), "(n+1)th G code", "", ua.VariantType.String)
+    LineAfter1.set_writable()
+
+    LineAfter2 = Param.add_variable(ua.NodeId(9004, addspace), "(n+2)th G code", "", ua.VariantType.String)
+    LineAfter2.set_writable()
+
+    LineAfter3 = Param.add_variable(ua.NodeId(9005, addspace), "(n+3)th G code", "", ua.VariantType.String)
+    LineAfter3.set_writable()
+
+    LineAfter4 = Param.add_variable(ua.NodeId(9006, addspace), "(n+4)th G code", "", ua.VariantType.String)
+    LineAfter4.set_writable()
+
+    LineAfter5 = Param.add_variable(ua.NodeId(9007, addspace), "(n+5)th G code", "", ua.VariantType.String)
+    LineAfter5.set_writable()
+
+    LineAfter6 = Param.add_variable(ua.NodeId(9008, addspace), "(n+6)th G code", "", ua.VariantType.String)
+    LineAfter6.set_writable()
+
+    LineAfter7 = Param.add_variable(ua.NodeId(9009, addspace), "(n+7)th G code", "", ua.VariantType.String)
+    LineAfter7.set_writable()
+
+    LineAfter8 = Param.add_variable(ua.NodeId(9010, addspace), "(n+8)th G code", "", ua.VariantType.String)
+    LineAfter8.set_writable()
+
+    LineAfter9 = Param.add_variable(ua.NodeId(9011, addspace), "(n+9)th G code", "", ua.VariantType.String)
+    LineAfter9.set_writable()
+
+    LineAfter10 = Param.add_variable(ua.NodeId(9012, addspace), "(n+10)th G code", "", ua.VariantType.String)
+    LineAfter10.set_writable()
+
+    LineAfter11 = Param.add_variable(ua.NodeId(9013, addspace), "(n+11)th G code", "", ua.VariantType.String)
+    LineAfter11.set_writable()
+
+    LineAfter12 = Param.add_variable(ua.NodeId(9014, addspace), "(n+12)th G code", "", ua.VariantType.String)
+    LineAfter12.set_writable()
+
+    LineAfter13 = Param.add_variable(ua.NodeId(9015, addspace), "(n+13)th G code", "", ua.VariantType.String)
+    LineAfter13.set_writable()
+
+    LineAfter14 = Param.add_variable(ua.NodeId(9016, addspace), "(n+14)th G code", "", ua.VariantType.String)
+    LineAfter14.set_writable()
+
+    LineAfter15 = Param.add_variable(ua.NodeId(9017, addspace), "(n+15)th G code", "", ua.VariantType.String)
+    LineAfter15.set_writable()
+
+    LineAfter16 = Param.add_variable(ua.NodeId(9018, addspace), "(n+16)th G code", "", ua.VariantType.String)
+    LineAfter16.set_writable()
+
+    LineAfter17 = Param.add_variable(ua.NodeId(9019, addspace), "(n+17)th G code", "", ua.VariantType.String)
+    LineAfter17.set_writable()
+
+    LineAfter18 = Param.add_variable(ua.NodeId(9020, addspace), "(n+18)th G code", "", ua.VariantType.String)
+    LineAfter18.set_writable()

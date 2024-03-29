@@ -110,6 +110,8 @@ if __name__ == '__main__':
     CurrentLine = Param.add_variable(ua.NodeId(8465, addspace), "CurrentLine", 0)
     CurrentLine.set_writable()
 
+
+
     #预读21行G代码
 
     # LineBefore10 = Param.add_variable(ua.NodeId(9000, addspace), "(n-10)th G code", "", ua.VariantType.String)
@@ -218,6 +220,22 @@ if __name__ == '__main__':
     # Read z_电压(z方向振动)
     z_voltage = Param.add_variable(ua.NodeId(1023, addspace), "z_voltage", 0.0)
     z_voltage.set_writable()
+
+    # Read 当前急停状态
+    CurrentEmergencyStopStatus = Param.add_variable(ua.NodeId(8468, addspace), "CurrentEmergencyStopStatus", 0)
+    CurrentEmergencyStopStatus.set_writable()
+
+    # Read 当前进给倍率
+    CurrentFeedRateRatio = Param.add_variable(ua.NodeId(8469, addspace), "CurrentFeedRateRatio", 0.0)
+    CurrentFeedRateRatio.set_writable()
+
+    # Read 当前快速进给
+    CurrentRapidFeed = Param.add_variable(ua.NodeId(8470, addspace), "CurrentRapidFeed", 0.0)
+    CurrentRapidFeed.set_writable()
+
+    # Read 当前主轴倍率
+    CurrentSpindleSpeedRatio = Param.add_variable(ua.NodeId(8471, addspace), "CurrentSpindleSpeedRatio", 0.0)
+    CurrentSpindleSpeedRatio.set_writable()
 
     server.start()
 

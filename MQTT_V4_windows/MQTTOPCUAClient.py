@@ -26,6 +26,10 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("programLine2PC_C0_cmd", 0)
     client.subscribe("proDis2PC_C0_P2010", 0)
     client.subscribe("proDis2PC_C0_P2009", 0)
+    client.subscribe("proDis2PC_C0_P2016", 0)
+    client.subscribe("proDis2PC_C0_P2017", 0)
+    client.subscribe("proDis2PC_C0_P2018", 0)
+    client.subscribe("proDis2PC_C0_P2019", 0)
 
     data = 1
     byteArray = struct.pack('i',data)
@@ -110,7 +114,36 @@ def process_message(msg):
             print(f"ProgramFileName set to {clean_filename} in OPC UA server.")
         except Exception as e:
             print(f"Failed to write ProgramFileName to OPC UA server: {e}")
-
+    elif msg.topic == "proDis2PC_C0_P2016":
+        data = struct.unpack('i', msg.payload)[0]
+        CurrentEmergencyStopStatus.set_value(data)
+        print(f"Updated CNC CurrentEmergencyStopStatus: {data}")
+    elif msg.topic == "proDis2PC_C0_P2017":
+        if len(msg.payload) >= 8:
+            # 使用'd'格式符来解析双精度浮点数(double)，它占用8字节
+            data = struct.unpack('d', msg.payload)[0]
+            CurrentFeedRateRatio.set_value(data)
+            print(f"Updated CNC CurrentFeedRateRatio: {data}")
+        else:
+            print("Error: Payload does not contain enough bytes for a double.")
+    elif msg.topic == "proDis2PC_C0_P2018":
+        # 确保msg.payload的长度至少为8字节
+        if len(msg.payload) >= 8:
+            # 使用'd'格式符来解析双精度浮点数(double)，它占用8字节
+            data = struct.unpack('d', msg.payload)[0]
+            CurrentRapidFeed.set_value(data)
+            print(f"Updated CNC CurrentRapidFeed: {data}")
+        else:
+            print("Error: Payload does not contain enough bytes for a double.")
+    elif msg.topic == "proDis2PC_C0_P2019":
+        # 确保msg.payload的长度至少为8字节
+        if len(msg.payload) >= 8:
+            # 使用'd'格式符来解析双精度浮点数(double)，它占用8字节
+            data = struct.unpack('d', msg.payload)[0]
+            CurrentSpindleSpeedRatio.set_value(data)
+            print(f"Updated CNC CurrentSpindleSpeedRatio: {data}")
+        else:
+            print("Error: Payload does not contain enough bytes for a double.")
         # # 使用正则表达式提取文件名
         # match1 = re.search(r'[^\\/]+$', clean_filename)
         # if match1:
@@ -217,7 +250,7 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == '__main__':
-    broker = "192.168.162.201"
+    broker = "192.168.162.200"
     opcua_url = "opc.tcp://localhost:48020/"
 
     # 创建MQTT客户端并连接
@@ -277,6 +310,14 @@ if __name__ == '__main__':
     IsSingleStepExecutionMode = opcua_client.get_node("ns=2;i=8466")
     # 程序名
     ProgramFileName = opcua_client.get_node("ns=2;i=8467")
+
+    CurrentEmergencyStopStatus = opcua_client.get_node("ns=2;i=8468")
+
+    CurrentFeedRateRatio = opcua_client.get_node("ns=2;i=8469")
+
+    CurrentRapidFeed = opcua_client.get_node("ns=2;i=8470")
+
+    CurrentSpindleSpeedRatio = opcua_client.get_node("ns=2;i=8471")
 
     # 开始MQTT客户端循环
     client.loop_start()

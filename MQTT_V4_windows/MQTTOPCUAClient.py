@@ -69,16 +69,16 @@ def process_message(msg):
         CNCVarAct_x.set_value(data[0])
         CNCVarAct_y.set_value(data[1])
         CNCVarAct_z.set_value(data[2])
-        CNCVarAct_a.set_value(data[3])
-        CNCVarAct_c.set_value(data[4])
+        CNCVarAct_a.set_value(data[4])
+        CNCVarAct_c.set_value(data[5])
         print(f"Updated CNC Axis Vars: X={data[0]}, Y={data[1]}, Z={data[2]}")
     elif msg.topic == "proDis2PC_C0_P2004":
         data = struct.unpack('32d', msg.payload)
         CNCVar_x.set_value(data[0])
         CNCVar_y.set_value(data[1])
         CNCVar_z.set_value(data[2])
-        CNCVar_a.set_value(data[3])
-        CNCVar_c.set_value(data[4])
+        CNCVar_a.set_value(data[4])
+        CNCVar_c.set_value(data[5])
         print(f"Updated CNC Axis Vars: X={data[0]}, Y={data[1]}, Z={data[2]}")
     elif msg.topic == "programLine2PC_C0_cmd":
         data = struct.unpack('i', msg.payload)[0]
@@ -250,6 +250,7 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == '__main__':
+    # broker = "192.168.162.200"
     broker = "192.168.162.200"
     opcua_url = "opc.tcp://localhost:48020/"
 

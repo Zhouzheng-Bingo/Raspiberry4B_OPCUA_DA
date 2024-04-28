@@ -251,7 +251,7 @@ def on_message(client, userdata, msg):
 
 if __name__ == '__main__':
     # broker = "192.168.162.200"
-    broker = "192.168.162.200"
+    broker = "192.168.4.56"
     opcua_url = "opc.tcp://localhost:48020/"
 
     # 创建MQTT客户端并连接
